@@ -37,9 +37,9 @@ define fstab::augeas(
       augeas { $name:
         context => "/files${fstab::variables::fstab_file}",
         changes => [
-          "rm ${fstab_match_line}",
+          "rm ${::fstab_match_line}",
         ],
-        onlyif  => "match ${fstab_match_line} size > 0"
+        onlyif  => "match ${::fstab_match_line} size > 0"
       }
     }
     default: {
