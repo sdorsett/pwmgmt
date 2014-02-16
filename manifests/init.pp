@@ -12,3 +12,6 @@ class { 'resolv_conf':
   nameserver => [ '192.168.1.5', '192.168.1.1' ], 
   domain => 'oakclifflabs.net', 
 } 
+class { 'timezone':
+  timezone => 'UTC',
+}
