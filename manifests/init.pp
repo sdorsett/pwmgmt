@@ -36,8 +36,9 @@ fstab { 'datavg-datalv':
   source => '/dev/mapper/datavg-datalv',
   dest   => '/opt/ManageEngine',
   type   => 'ext4',
+  require => File ['/opt/ManageEngine/'], 
 }
 
 exec {'/bin/mount -a':}
   
-Class['lvm::module'] -> File['/opt/ManageEngine'] -> Class['fstab'] -> Exec['/bin/mount-a']
+# Class['lvm::module'] -> File['/opt/ManageEngine'] -> Class['fstab'] -> Exec['/bin/mount-a']
