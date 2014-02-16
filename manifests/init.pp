@@ -24,3 +24,15 @@ lvm::volume { 'datalv':
     fstype => 'ext4',
     size => '9G',
 }
+file { 
+  '/opt/ManageEdgine':
+    ensure => directory,
+    owner => 'root',
+    group => 'root',
+    mode  => 0755,
+}
+fstab { 'datavg-datalv':
+  source => '/dev/mapper/datavg-datalv',
+  dest   => '/opt/ManageEdgine',
+  type   => 'ext4',
+}
