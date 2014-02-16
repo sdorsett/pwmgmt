@@ -15,3 +15,12 @@ class { 'resolv_conf':
 class { 'timezone':
   timezone => 'UTC',
 }
+#class { 'lvm': }
+
+lvm::volume { 'datalv':
+    ensure => present,
+    vg => 'datavg',
+    pv => '/dev/sdb',
+    fstype => 'ext4',
+    size => '9G',
+}
