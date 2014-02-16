@@ -8,14 +8,15 @@ network::if::static {  'eth0':
   netmask => '255.255.255.0', 
   gateway => '192.168.1.1', 
 } 
+
 class { 'resolv_conf': 
   nameserver => [ '192.168.1.5', '192.168.1.1' ], 
   domain => 'oakclifflabs.net', 
 } 
+
 class { 'timezone':
   timezone => 'UTC',
 }
-#class { 'lvm': }
 
 lvm::volume { 'datalv':
     ensure => present,
@@ -25,7 +26,7 @@ lvm::volume { 'datalv':
     size => '9G',
 }
 file { 
-  '/opt/ManageEdgine':
+  '/opt/ManageEngine':
     ensure => directory,
     owner => 'root',
     group => 'root',
@@ -33,6 +34,10 @@ file {
 }
 fstab { 'datavg-datalv':
   source => '/dev/mapper/datavg-datalv',
-  dest   => '/opt/ManageEdgine',
+  dest   => '/opt/ManageEngine',
   type   => 'ext4',
 }
+
+exec {'/bin/mount -a':}
+  
+Class['lvm::module'] -> File['/opt/ManageEngine'] -> Class['fstab'] -> Exec['/bin/mount-a']
