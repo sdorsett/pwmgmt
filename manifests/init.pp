@@ -24,6 +24,7 @@ lvm::volume { 'datalv':
     pv => '/dev/sdb',
     fstype => 'ext4',
     size => '9G',
+    before => File['/opt/ManageEngine'],
 }
 file { 
   '/opt/ManageEngine':
@@ -36,9 +37,11 @@ fstab { 'datavg-datalv':
   source => '/dev/mapper/datavg-datalv',
   dest   => '/opt/ManageEngine',
   type   => 'ext4',
-  require => File ['/opt/ManageEngine/'], 
+  before => Exec['/bin/mount -a'], 
 }
 
-exec {'/bin/mount -a':}
+exec {'/bin/mount -a':
+#  require 
+}
   
 # Class['lvm::module'] -> File['/opt/ManageEngine'] -> Class['fstab'] -> Exec['/bin/mount-a']
