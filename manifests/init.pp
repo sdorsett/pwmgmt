@@ -1,3 +1,4 @@
+# add hostname and eth0 network configurations
 class { 'network': }
 class { 'network::global':
   hostname => 'pwmgmt.oakclifflabs.net',
@@ -9,15 +10,18 @@ network::if::static {  'eth0':
   gateway => '192.168.1.1', 
 } 
 
+# add domain & nameservers to /etc/resolv.conf
 class { 'resolv_conf': 
   nameserver => [ '192.168.1.5', '192.168.1.1' ], 
   domain => 'oakclifflabs.net', 
 } 
 
+# set time to to UTC
 class { 'timezone':
   timezone => 'UTC',
 }
 
+# add LVM volume, group & format with ext4
 lvm::volume { 'datalv':
     ensure => present,
     vg => 'datavg',
@@ -26,6 +30,8 @@ lvm::volume { 'datalv':
     size => '9G',
     before => File['/opt/ManageEngine'],
 }
+
+# ensure directory for fstab mount is present
 file { 
   '/opt/ManageEngine':
     ensure => directory,
@@ -33,6 +39,8 @@ file {
     group => 'root',
     mode  => 0755,
 }
+
+# add /etc/fstab entry to mount LVM source to /opt/ManageEngine
 fstab { 'datavg-datalv':
   source => '/dev/mapper/datavg-datalv',
   dest   => '/opt/ManageEngine',
@@ -40,8 +48,11 @@ fstab { 'datavg-datalv':
   before => Exec['/bin/mount -a'], 
 }
 
-exec {'/bin/mount -a':
-#  require 
+# run 'mount -a' to re-read the /etc/fstab file 
+exec {'/bin/mount -a':}
+
+# add 'compat-libstdc++-296' package
+package {'compat-libstdc++-296':
+  ensure => 'installed',
 }
-  
-# Class['lvm::module'] -> File['/opt/ManageEngine'] -> Class['fstab'] -> Exec['/bin/mount-a']
+
